@@ -1,35 +1,29 @@
 func longestPalindrome(s string) string {
     
+    if s == "" {
+        return ""
+    }
+
     length := len(s)
-    maxI := 0
-    maxJ := 0
-    max := 0
+    memo := make([][]bool, length)
+    var mi, mj, max int
     
-    for i := 0; i < length; i++ {
-        for j := i + 1;  j <= length; j++ {
-            if isPalindrome(s[i:j]) && max < j - i {
+    for i := length - 1; i >= 0; i-- {
+        memo[i] = make([]bool, length)
+        for j := length - 1;  j >= i; j-- {
+            if (i == j) || (j - i == 1 && s[i] == s[j]) {
+                memo[i][j] = true
+            } else {
+                memo[i][j] = s[i] == s[j] && memo[i+1][j-1]
+            }
+            
+            if memo[i][j] && max < j - i {
                 max = j - i
-                maxI = i
-                maxJ = j
+                mi = i
+                mj = j
             }
         }
     }
     
-    return s[maxI:maxJ]
-}
-
-func isPalindrome(s string) bool {
-    
-    length := len(s)
-    
-    if length < 2 {
-        return true
-    }
-    
-    if s[0] == s[length-1] {
-        return isPalindrome(s[1:length-1])
-    } 
-    
-    return false
-    
+    return s[mi:mj+1]
 }
