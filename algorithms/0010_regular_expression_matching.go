@@ -1,15 +1,23 @@
 func isMatch(s string, p string) bool {
         
-    if p == "" {
-        return s == ""
+    var dp = make([][]bool, len(s)+1)
+    
+    for i := range dp {
+        dp[i] = make([]bool, len(p)+1)
     }
     
-    firstMatch := (s != "") && (p[0] == s[0] || p[0] == '.')
+    dp[len(s)][len(p)] = true
     
-    if len(p) >= 2 && p[1] == '*' {
-        return isMatch(s, p[2:]) || (firstMatch && isMatch(s[1:], p))
-    } else {
-        return firstMatch && isMatch(s[1:], p[1:])
+    for i := len(s); i >= 0; i-- {
+        for j := len(p) - 1; j >=0; j-- {
+            firstMatch := (i < len(s) && (p[j] == s[i] || p[j] == '.'))
+            if (j + 1 < len(p) && p[j+1] == '*') {
+                dp[i][j] = dp[i][j+2] || firstMatch && dp[i+1][j]
+            } else {
+                dp[i][j] = firstMatch && dp[i+1][j+1]
+            }
+        }
     }
-
+    
+    return dp[0][0]
 }
