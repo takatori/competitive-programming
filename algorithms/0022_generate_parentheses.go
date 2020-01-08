@@ -1,22 +1,21 @@
+var ans []string
+
+func backtrace(n int, s string, left, right int) {
+    if len(s) == 2 * n {
+        ans = append(ans, s)
+        return 
+    }
+    if left < n {
+        backtrace(n, s+"(", left+1, right)
+    }
+    if right < left {
+        backtrace(n, s+")", left, right+1)
+    }
+}
+
+
 func generateParenthesis(n int) []string {
-    
-    if n == 1 {
-        return []string{"()"}
-    }
-    
-    tmp := generateParenthesis(n-1)
-    set := make(map[string]struct{})
-    for _, s := range tmp {
-        set["(" + s + ")"] = struct{}{}
-        set["()" + s ] = struct{}{}
-        set[s + "()"] = struct{}{}
-    }
-    
-    var result []string
-    
-    for k, _ := range set {
-        result = append(result, k)
-    }
-    
-    return result
+    ans = []string{}
+    backtrace(n, "", 0, 0)
+    return ans
 }
