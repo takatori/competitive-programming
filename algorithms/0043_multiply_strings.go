@@ -1,5 +1,9 @@
 func multiply(num1 string, num2 string) string {
     
+    if num1 == "0" || num2 == "0" {
+        return "0"
+    }
+    
     m := len(num1)
     n := len(num2)
     
@@ -16,10 +20,10 @@ func multiply(num1 string, num2 string) string {
         }
     }
     
-    result := "0"
+    result := ""
     
     for _, p := range pos {
-        if !(result == "0" && p == 0) {
+        if !(result == "" && p == 0) {
             result += strconv.Itoa(p)
         }
     }
