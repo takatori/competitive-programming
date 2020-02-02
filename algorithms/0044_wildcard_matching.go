@@ -1,27 +1,31 @@
 func isMatch(s string, p string) bool {
     
-    var i, j int
-    // p_len = 10 s_len =17
-    // p = ab*cd?i*de, s = abefcdgiescdfimde
-    for i < len(p) && j < len(s) { // i = 9, j = 12
-        if p[i] == '*' { // p[9] = e
-            for i < len(p) -1 && p[i+1] == '*' { // p[8] = d
-                i++
-            }
-            for j < len(s) && (i == len(p)-1 || s[j] != p[i+1]) { // s[8] = e, p[8] = d
-                j++  // 8 -> 11 
-            }
-        } else if p[i] == '?' {
-            j++ // j = 7
-        } else {
-            if p[i] != s[j] { // p[8] = d, s[11] = d
-                return false
-            } else {
-                j++ // j = 12
-            }
-        }
-        i++  // i = 9
-    }
-    
-    return i == len(p) && j == len(s)
+	si := 0
+	pi := 0
+	match := 0
+	starIdx := -1
+
+	for si < len(s) {
+
+		if pi < len(p) && (p[pi] == '?' || s[si] == p[pi]) {
+			si++
+			pi++
+		} else if pi < len(p) && p[pi] == '*' {
+			starIdx = pi
+			match = si
+			pi++
+		} else if starIdx != -1 {
+			pi = starIdx + 1
+			match++
+			si = match
+		} else {
+			return false
+		}
+	}
+
+	for pi < len(p) && p[pi] == '*' {
+		pi++
+	}
+
+	return pi == len(p)
 }
