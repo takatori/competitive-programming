@@ -2,29 +2,22 @@ var memo map[string][][]int
 
 func permute(nums []int) [][]int {
     
-    sort.Ints(nums) // [1,2,3]
-    key := fmt.Sprint(nums) // 1,2,3
-    if memo == nil {
-        memo = make(map[string][][]int)
-    }
-    if len(nums) <= 1 {
-        memo[key] = [][]int{nums}
-        return [][]int{nums}
-    }   
-    if n, ok := memo[key]; ok {
-        return n
-    }
-    
-    result := make([][]int, 0)
-    
-    for i := 0; i < len(nums); i++ { // i = 1
-        target := append(nums[:i], nums[i+1:]...) // [1], [3] => [1,3]
-        for _, prev := range permute(target) { // [[1,3],[3,1]]
-            result = append(result, append([]int{nums[i]}, prev...)) // [1,2,3], [1,3,2],[2,1,3],[2,3,1],
-        }
-    }
-    
-    memo[key] = result
-    
-    return memo[key]
+	if len(nums) == 0 {
+		return nil
+	}
+	ans := make([][]int, 0)
+	backtrace(nums, nil, &ans)
+	return ans
 }
+
+func backtrace(nums []int, prev []int, ans *[][]int) {
+	if len(nums) == 0 {
+		*ans = append(*ans, append([]int{}, prev...))
+		return
+	}
+
+	for i := 0; i < len(nums); i++ {
+		backtrace(append(nums[:i], nums[i+1:]...), append(prev, nums[i]), ans)
+	}
+}
+
