@@ -1,5 +1,3 @@
-var memo map[string][][]int
-
 func permute(nums []int) [][]int {
     
 	if len(nums) == 0 {
@@ -17,7 +15,6 @@ func backtrace(nums []int, prev []int, ans *[][]int) {
 	}
 
 	for i := 0; i < len(nums); i++ {
-		backtrace(append(nums[:i], nums[i+1:]...), append(prev, nums[i]), ans)
+		backtrace(append(append([]int{}, nums[:i]...), nums[i+1:]...), append(prev, nums[i]), ans)
 	}
 }
-
