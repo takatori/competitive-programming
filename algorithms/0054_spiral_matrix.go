@@ -4,37 +4,44 @@ func spiralOrder(matrix [][]int) []int {
         return []int{}
     }
     
-    result := make([]int, 0)
-    i_len := len(matrix)
-    j_len := len(matrix)
+    ans := make([]int, 0)
     
-    var c int
+    r1, r2 := 0, len(matrix)-1
+    c1, c2 := 0, len(matrix[0])-1
     
-    if i_len > j_len {
-        c = j_len-1
-    } else {
-        c = i_len-1
-    }
-    
-    for n := 0; n < c; n++ {
-        result = append(result, oneLoop(matrix, n, n))
+    for r1 <= r2 && c1 <= c2 {
+        for _, v := range spiralCoords(r1,c1,r2,c2) {
+            ans = append(ans, matrix[v[0]][v[1]])
+        }
+        r1 += 1
+        r2 -= 1
+        c1 += 1
+        c2 -= 1
     }
 
+    return ans
 }
 
-func oneLoop(matrix [][]int, i,j int) []int {
+func spiralCoords(r1, c1, r2, c2 int) [][]int {
     
-    var result []int
+    ans := make([][]int, 0)
     
-    for t_j := j; t_j < j_len-j; t_j++ {
-        result = append(result, matrix[i][t_j])
+    for c := c1; c < c2+1; c++ {
+        ans = append(ans, []int{r1, c})
     }
     
-    for t_i := i+1; t_i < i_len-i-1; t_i++ {
-        result = append(result, matrix[t_i][j_len-i-1])
+    for r := r1+1; r < r2+1; r++ {
+        ans = append(ans, []int{r, c2})
     }
-        
-    for 
     
-    return result
+    if r1 < r2 && c1 < c2 {
+        for c := c2-1; c > c1; c-- {
+            ans = append(ans, []int{r2, c})
+        }
+        for r := r2; r > r1; r-- {
+            ans = append(ans, []int{r, c1})
+        }
+    }
+    
+    return ans
 }
