@@ -4,45 +4,21 @@ func merge(intervals [][]int) [][]int {
         return intervals
     }
     
-    result := [][]int{intervals[0]}
-    for i := 1; i < len(intervals); i++ {
-        lastIdx := len(result)-1
-        first, second := mergeTwo(result[lastIdx], intervals[i])
-        if second == nil {
-            result[lastIdx] = first
+    sort.Slice(intervals, func(i, j int) bool {
+        return intervals[i][0] < intervals[j][0]
+    })
+
+    result := [][]int{}
+    
+    for _, interval := range intervals {
+        lastIndex := len(result)-1
+        if len(result) == 0 || result[lastIndex][1] < interval[0] { 
+            result = append(result, interval)
         } else {
-            result[lastIdx] = first
-            result = append(result, second)
+            if result[lastIndex][1] < interval[1] {
+                result[lastIndex][1] = interval[1]
+            }
         }
     }
     return result
-}
-
-func mergeTwo(left []int, right []int) ([]int, []int) {
-    
-    if left[0] > right[1] {
-        return right, left
-    }
-    
-    if left[0] <= right[0] && right[1] <= left[1] {
-        return left, nil
-    }
-    
-    if right[0] <= left[0] && left[1] <= right[1] {
-        return right, nil
-    }
-    
-    if left[1] >= right[0] {
-        l := left[0]
-        r := left[1]
-        if left[0] > right[0] {
-            l = right[0]
-        }
-        if left[1] < right[1] {
-            r = right[1]
-        }
-        return []int{l,r}, nil
-    } 
-    
-    return left, right
 }
