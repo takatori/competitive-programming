@@ -1,26 +1,23 @@
 func getPermutation(n int, k int) string {
+    result := make([]string, 0, n)
     
-    s := make(map[int]struct{}, n)
+    numbers := make([]int, 0, n)
+    factorials := make([]int, n+1)
+    factorials[0] = 1
+    
     for i := 1; i <= n; i++ {
-        s[i] = struct{}{}
+        factorials[i] = factorials[i-1] * i
+        numbers = append(numbers, i)
     }
     
-    result := make([]int, n)
+    k--
     
-    for i := n; i >= 0; i-- {
-        result = append(result, f(s, k))
+    for i:= 1; i <= n; i++ {
+        idx := k/factorials[n-i]
+        result = append(result, strconv.Itoa(numbers[idx]))
+        numbers = append(numbers[:idx], numbers[idx+1:]...)
+        k -= idx * factorials[n-i]
     }
     
-    return strings.Join(result, "")
-}
-
-func f(s map[int]struct{}, k) int {
-    
-}
-
-func fuctorial(n int) int {
-    if n == 1 {
-        return n
-    }
-    return n * fuctorial(n-1)
+	return strings.Join(result, "")    
 }
