@@ -1,9 +1,8 @@
 func addBinary(a string, b string) string {
     
-    result := 0
-    i := len(a)-1
-    j := len(b)-1
+    result := make([]int, 0)
     carry := 0
+    i,j := len(a)-1, len(b)-1
     
     for i >= 0 || j >= 0 {
         var ai, bi int
@@ -13,12 +12,21 @@ func addBinary(a string, b string) string {
         if j >= 0 {
             bi = toInt(b[j])
         }
-        result = ((ai+bi+carry)%2)*10 + result
+        result = append(result, (ai+bi+carry)%2)
         carry = (ai+bi+carry)/2        
         i--
         j--
     }
-    return strconv.Itoa(result)
+    
+    ans := ""
+    
+    for _, n := range result {
+        ans = strconv.Itoa(n) + ans
+    }
+    if carry == 1 {
+        ans = "1" + ans
+    }
+    return ans
     
 }
 
