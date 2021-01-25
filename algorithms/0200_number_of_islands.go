@@ -1,4 +1,9 @@
-func numIslands(grid [][]byte) int {
+type Neighbor struct {
+	r int;
+	c int;
+  }
+  
+  func numIslands(grid [][]byte) int {
 	nr := len(grid)
 	
 	if nr == 0 {
@@ -13,7 +18,36 @@ func numIslands(grid [][]byte) int {
 	  for c := 0; c < nc; c++ {
 		if grid[r][c] == '1' {
 		  num_islands++
-		  dfs(grid, r, c)
+		  grid[r][c] = '0' // mark as visited
+		  q := make([]Neighbor, 0)
+		  q = append(q, Neighbor{r,c}) // push
+		  
+		  for len(q) > 0 {
+			rc := q[0]
+			q = q[1:] // pop
+			row := rc.r
+			col := rc.c
+  
+			if row-1 >= 0 && grid[row-1][col] == '1' {
+			   q = append(q, Neighbor{row-1, col})
+			   grid[row-1][col] = '0'
+			}
+  
+			if row+1 < nr && grid[row+1][col] == '1' {
+			  q = append(q, Neighbor{row+1, col})
+			  grid[row+1][col] = '0'
+			}
+  
+			if col-1 >= 0 && grid[row][col-1] == '1' {
+			  q = append(q, Neighbor{row, col-1})
+			  grid[row][col-1] = '0'
+			}
+  
+			if col+1 < nc && grid[row][col+1] == '1' {
+			  q = append(q, Neighbor{row, col+1})
+			  grid[row][col+1] = '0'
+			}
+		  }
 		}
 	  }
 	}
@@ -21,27 +55,4 @@ func numIslands(grid [][]byte) int {
 	return num_islands
   }
   
-  func dfs(grid [][]byte, r int, c int) {
-	
-	nr := len(grid)
-	nc := len(grid[0])
-	
-	grid[r][c] = '0'
-	
-	if r-1 >= 0 && grid[r-1][c] == '1' {
-	  dfs(grid, r-1, c)
-	}
-	
-	if r+1 < nr && grid[r+1][c] == '1' {
-	  dfs(grid, r+1, c)
-	}
-	
-	if c-1 >= 0 && grid[r][c-1] == '1' {
-	  dfs(grid, r, c-1)
-	}
-	
-	if c+1 < nc && grid[r][c+1] == '1' {
-	  dfs(grid, r, c+1)
-	}
-	
-  }
+  
