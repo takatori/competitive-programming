@@ -1,32 +1,37 @@
+import "strconv"
 
-var count int
-var memo map[string]int
+var memo map[int]int
 
 func numDecodings(s string) int {
+  memo = make(map[int]int)
+  return recursiveWithMemo(0, s)
+}
+
+func recursiveWithMemo(index int, str string) int {
+  if v, ok := memo[index]; ok {
+    return v
+  }
   
-  if len(s) == 0 {
+  if index == len(str) {
+    return 1
+  }
+  
+  if str[index] == '0' {
     return 0
   }
-  memo = make(map[string]int, 0)
-  f(s)
   
-  return count
+  if index == len(str)-1 {
+    return 1
+  }
+  
+  ans := recursiveWithMemo(index+1, str)
+  i, _ := strconv.Atoi(str[index:index+2]) 
+  if i <= 26 {
+    ans += recursiveWithMemo(index+2, str)
+  }
+  
+  memo[index] = ans
+  
+  return ans
 }
 
-func f(s string) {
-  if len(s) == 0 {
-    count++
-    return
-  }
-  
-  if s[0] != '0' && memo[s[1:]] == 0 {
-    f(s[1:])
-  }
-  
-  if len(s) > 1 && (s[0] == '1' || (s[0] == '2' && (s[1] == '0' || s[1] == '1' || s[1] == '2' || s[1] == '3' || s[1] == '4' || s[1] == '5' || s[1] == '6')) && memo[s[2:]] == 0) {
-    f(s[2:])
-  }
-  
-  memo[s] = 1
-
-}
