@@ -2,20 +2,12 @@ import "math"
 
 func consecutiveNumbersSum(N int) int {
   
-  count := 1
-  e := int(math.Sqrt(float64(N)))
-  
-  for i := 2; i <= e; i++ {
-    if isExist(i, N) {
+  count := 0
+  upper_limit := int(math.Sqrt(float64(2 * N) + 0.25) - 0.5)
+  for k := 1; k <= upper_limit; k++ {
+    if (N-k * (k+1)/2) % k == 0 {
       count++
     }
   }
-  
   return count
-}
-
-func isExist(L int, N int) bool {
-  a := (2*N) % L
-  b := ((2*N)/L) - L + 1
-  return a == 0 && b > 0 && b % 2 == 0
 }
