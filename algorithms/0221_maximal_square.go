@@ -6,44 +6,36 @@ func maximalSquare(matrix [][]byte) int {
 		return 0
 	}
 
-	max := 0
-	m := len(matrix)
-	n := len(matrix[0])
+	rows := len(matrix)
+	cols := len(matrix[0])
+	maxsqlen := 0
 
-	for i := 0; i < m; i++ {
-		for j := 0; j < n; j++ {
-			if matrix[i][j] == '1' {
-				tmp := matrixSize(matrix, i, j)
-				area := tmp * tmp
-				if area > max {
-					max = area
-				}
+	dp := make([][]int, rows+1)
+	for i := range dp {
+		dp[i] = make([]int, cols+1)
+	}
+
+	for i := 1; i <= rows; i++ {
+		for j := 1; j <= cols; j++ {
+			if matrix[i-1][j-1] == '1' {
+				dp[i][j] = min(min(dp[i][j-1], dp[i-1][j]), dp[i-1][j-1]) + 1
+				maxsqlen = max(maxsqlen, dp[i][j])
 			}
 		}
 	}
-
-	return max
+	return maxsqlen * maxsqlen
 }
 
-func matrixSize(matrix [][]byte, i int, j int) int {
-	local_max := 1
-
-	for i+local_max < len(matrix) && j+local_max < len(matrix[0]) {
-
-		for mi := 0; mi <= local_max; mi++ {
-			if matrix[i+mi][j+local_max] == '0' {
-				return local_max
-			}
-		}
-
-		for nj := 0; nj < local_max; nj++ {
-			if matrix[i+local_max][j+nj] == '0' {
-				return local_max
-			}
-		}
-
-		local_max++
+func min(a, b int) int {
+	if a < b {
+		return a
 	}
+	return b
+}
 
-	return local_max
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
