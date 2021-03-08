@@ -5,24 +5,21 @@ public:
     {
 
         int carry = 0;
-        auto num1_size = num1.size();
-        auto num2_size = num2.size();
-        auto size = num1_size > num2_size ? num1_size : num2_size;
+        int i = num1.size()-1;
+        int j = num2.size()-1;
         string ans = "";
 
-        for (std::string::size_type i = 1; i <= size; ++i)
+        while (i >= 0 || j >= 0 || carry)
         {
-            int n1 = (num1_size - i >= 0) ? (num1[num1_size - i] - '0') : 0;
-            int n2 = (num2_size - i >= 0) ? (num2[num2_size - i] - '0') : 0;
-            ans = to_string((n1 + n2 + carry) % 10) + ans;
-            carry = (n1 + n2 + carry) / 10;
+            int sum = 0;
+            int digit1 = i >= 0 ? num1[i--] - '0' : 0;
+            int digit2 = j >= 0 ? num2[j--] - '0' : 0;
+            sum = digit1 + digit2 + carry;
+            carry = sum / 10;
+            sum = sum % 10;
+            ans = to_string(sum) + ans;
         };
 
-        if (carry > 0)
-        {
-            ans = "1" + ans;
-        }
-
-        return ans;
+        return ans == "" ? "0" : ans;
     }
 };
