@@ -4,8 +4,8 @@ class UndergroundSystem
 {
 
 private:
-    unordered_map<string, unordered_map<string, tuple<long, long>>> travels;
-    unordered_map<int, tuple<string, int>> checkInHistory;
+    unordered_map<string, pair<int, int>> checkoutMap;
+    unordered_map<int, pair<string, int>> checkinMap;
 
 public:
     UndergroundSystem()
@@ -14,33 +14,21 @@ public:
 
     void checkIn(int id, string stationName, int t)
     {
-        this->checkInHistory[id] = make_tuple(stationName, t);
+        this->checkinMap[id] = {stationName, t};
     }
 
     void checkOut(int id, string stationName, int t)
     {
-        auto history = this->checkInHistory[id];
-        string checkInStation = get<0>(history);
-        int checkInTime = get<1>(history);
-
-        auto current = this->travels[checkInStation][stationName];
-        long totalTime = get<0>(current);
-        long count = get<1>(current);
-        totalTime = totalTime + (t - checkInTime);
-        this->travels[checkInStation][stationName] = make_tuple(totalTime, count++);
+        auto& checkIn = checkinMap[id];
+        string route = checkIn.first + "_" + stationName;
+        checkoutMap[route].first += t - checkIn.second;
+        checkoutMap[route].second += 1;
     }
 
     double getAverageTime(string startStation, string endStation)
     {
-        auto station = this->travels[startStation][endStation];
-        return double(get<0>(station)) / get<1>(station);
+        string route = startStation + "_" + endStation;
+        auto& checkout = checkoutMap[route];
+        return (double) checkout.first / checkout.second;
     }
 };
-
-/**
- * Your UndergroundSystem object will be instantiated and called as such:
- * UndergroundSystem* obj = new UndergroundSystem();
- * obj->checkIn(id,stationName,t);
- * obj->checkOut(id,stationName,t);
- * double param_3 = obj->getAverageTime(startStation,endStation);
- */
