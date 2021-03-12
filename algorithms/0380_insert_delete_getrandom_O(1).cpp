@@ -32,7 +32,9 @@ public:
             return false;
         }
         int idx = this->dict[val];
-        this->list.at(idx) = this->list.at(this->list.size() - 1);
+        int last = this->list.back();
+        this->list.at(idx) = last;
+        this->dict[last] = idx;
         this->list.pop_back();
         this->dict.erase(val);
         return true;
