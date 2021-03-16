@@ -1,7 +1,7 @@
 class TimeMap
 {
 private:
-    unordered_map<string, vector<pair<int, string> > > store;
+    unordered_map<string, vector<pair<int, string>>> store;
 
 public:
     /** Initialize your data structure here. */
@@ -14,7 +14,7 @@ public:
         auto newItem = make_pair(timestamp, value);
         if (this->store.count(key) == 0)
         {
-            this->store[key] = vector<pair<int, string> >{newItem};
+            this->store[key] = vector<pair<int, string>>{newItem};
         }
         else
         {
@@ -28,15 +28,39 @@ public:
         {
             return "";
         }
-        string ans = "";
         auto items = this->store[key];
-        for (int i = 0; i < items.size(); i++)
+        int idx = upper_bound(items, timestamp);
+        if (idx == -1)
         {
-            if (items.at(i).first <= timestamp)
+            return "";
+        }
+        return items.at(idx - 1).second;
+    }
+
+    int upper_bound(vector<pair<int, string>> arr, int timestamp)
+    {
+        int mid;
+        int left = 0;
+        int right = arr.size();
+
+        while (left < right)
+        {
+            mid = (right - left) / 2;
+            if (timestamp >= arr.at(mid).first)
             {
-                ans = items.at(i).second;
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid;
             }
         }
-        return ans;
+
+        if (right == 0)
+        {
+            return -1;
+        }
+
+        return left;
     }
 };
