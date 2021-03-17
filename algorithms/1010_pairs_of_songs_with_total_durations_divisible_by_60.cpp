@@ -1,27 +1,22 @@
-#include<bits/stdc++.h>
-
-using namespace std;
-
 class Solution
 {
 public:
     int numPairsDivisibleBy60(vector<int> &time)
     {
-        int N = time.size();
-        vector<vector<int>> memo(N);
-        for (int i = 0; i < N; i++)
+        vector<int> remainders(60);
+        int count = 0;
+        for (int i = 0; i < time.size(); i++)
         {
-            memo.at(i) = vector<int>(N);
-        }
-        int ans = 0;
-        for (int i = 0; i < time.size() - 1; i++)
-        {
-            for (int j = i + 1; j < time.size(); j++)
-            {
-                if ((time.at(i) + time.at(j)) % 60 == 0)
-                    ans++;
+            if (time.at(i) % 60 == 0)
+            { // check if (a % 60 == 0) && (b %% 60 == 0)
+                count += remainders.at(0);
             }
+            else
+            {
+                count += remainders.at(60 - time.at(i) % 60); // check if (a % 60) + (b % 60) == 60
+            }
+            remainders[time.at(i) % 60]++;
         }
-        return ans;
+        return count;
     }
 };
