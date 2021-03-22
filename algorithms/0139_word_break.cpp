@@ -5,14 +5,21 @@ class Solution
 public:
     bool wordBreak(string s, vector<string> &wordDict)
     {
-        if (s.size() == 0)
-            return true;
-        for (string word : wordDict)
+        set<string> word_set(wordDict.begin(), wordDict.end());
+        vector<bool> dp(s.length() + 1);
+        dp[0] = true;
+
+        for (int i = 1; i <= s.length(); i++)
         {
-            if (s.size() >= word.size() && equal(begin(word), end(word), begin(s)))
-                if (wordBreak(s.substr(word.size()), wordDict))
-                    return true;
+            for (int j = 0; j < i; j++)
+            {
+                if (dp[j] && word_set.find(s.substr(j, i - j)) != word_set.end())
+                {
+                    dp[i] = true;
+                    break;
+                }
+            }
         }
-        return false;
+        return dp[s.length()];
     }
 };
