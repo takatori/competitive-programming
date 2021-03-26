@@ -1,127 +1,81 @@
+#include <string>
+#include <unordered_map>
+
 using namespace std;
 
-class Node
-{
-    string name;
-    bool is_file;
-    string content;
-    vector<reference_wrapper<Node> > nodes;
+class FileSystem {
+private:
+    struct TrieNode {
+        bool isFile;
+        string content;
+        unordered_map<string, TrieNode *> children;
+        TrieNode() : isFile(false) {}
+    };
+
+    TrieNode *root;
 
 public:
-    Node()
-    {
-        this->name = "";
-        this->is_file = false;
-        this->nodes = vector<reference_wrapper<Node> >();
+    FileSystem() {
+        root = new TrieNode();
     }
 
-    Node(string name, bool is_file, string content)
-    {
-        this->name = name;
-        this->is_file = is_file;
-        this->content = content;
-        this->nodes = vector<reference_wrapper<Node> >();
-    }
-
-    Node &find(string name)
-    {
-        for (Node &node : nodes)
-        {
-            if (node.name == name)
-                return node;
-        }
-        return &Node("*", false, "");
-    }
-}
-
-class FileSystem
-{
-    &Node root;
-
-public:
-    FileSystem()
-    {
-        root = &Node();
-    }
-
-    vector<string> ls(string path)
-    {
-        vector<string> paths = split(path, '/');
-        &Node target = root;
-        for (string p : paths)
-        {
-            target = target.find(p);
-        }
-        vector<string> results;
-        for (Node &node : target.nodes)
-        {
-            results.push_back(node.name);
-        }
-        return results;
-    }
-
-    void mkdir(string path)
-    {
-        vector<string> paths = split(path, '/');
-        &Node target = root;
-        for (string p : paths)
-        {
-            auto t = target.find(p);
-            if (t.name == "*")
-            {
-                Node &newNode = &Node(p, false, "")
-                                     target.nodes.push_back(newNode);
-                target = newNode;
+    vector<string> getStrs(string &path) {
+        vector<string> ans;
+        int i = 1, j = 1;
+        while (j <= path.length()) {
+            if (i != j && (j == path.length() || path[j] == '/')) {
+                ans.push_back(path.substr(i, j-i));
+                i = j+1;
             }
-            else
-            {
-                target = t;
-            }
+            ++j;
+        }
+        return ans;
+    }
+
+    vector<string> ls(string path) {
+        vector<string> strs = getStrs(path);
+        TrieNode *curr = root;
+        for (string &str : strs) {
+            curr = curr->children[str];
+        }
+        if (curr->isFile) 
+            return {strs.back()};
+
+        vector<string> ans;
+        for (auto &p : curr->children) 
+            ans.push_back(p.first);
+        sort(ans.begin(), ans.end());
+        return ans;
+    }
+
+    void mkdir(string path) {
+        vector<string> strs = getStrs(path);
+        TrieNode *curr = root;
+        for (string &str : strs) {
+            if (!curr->children.count(str))
+                curr->children[str] = new TrieNode();
+            curr = curr->children[str];
         }
     }
 
-    void addContentToFile(string filePath, string content)
-    {
-        vector<string> paths = split(path, '/');
-        &Node target = root;
-        string fileName = paths.back();
-        paths.pop_back();
-        for (string p : paths)
-        {
-            target = target.find(p);
+    void addContentToFile(string filePath, string content) {
+        vector<string> strs = getStrs(filePath);
+        TrieNode *curr = root;
+        for (string &str : strs) {
+            if(!curr->children.count(str))
+                curr->children[str] = new TrieNode();
+            curr = curr->children[str];
         }
-        auto n = target.find(fileName);
-        if (n.name == "*")
-        {
-            &Node file = &Node(fileName, true, content);
-            target.nodes.push_back(file);
-        }
-        else
-        {
-            n.content += content;
-        }
+        curr->isFile = true;
+        curr->content += content;
     }
 
-    string readContentFromFile(string filePath)
-    {
-        vector<string> paths = split(path, '/');
-        &Node target = root;
-        for (string p : paths)
-        {
-            target = target.find(p);
-        }
-        return target.content;
+    string readContentFromFile(string filePath) {
+        vector<string> strs = getStrs(filePath);
+        TrieNode *curr = root;
+        for (string &str : strs)
+            curr = curr->children[str];
+        return curr->content;
     }
-
-    vector<string> split(const string &str, char sep)
-    {
-        vector<string> v;
-        stringstream ss(str);
-        string buffer;
-        while (getline(ss, buffer, sep))
-        {
-            v.push_back(buffer);
-        }
-        return v;
-    }
+    
 };
