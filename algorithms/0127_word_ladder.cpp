@@ -3,32 +3,40 @@ using namespace std;
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
-      unordered_set<string> dict(wordList.begin(), wordList.end());
-      queue<string> todo;
-      todo.push(beginWord);
-      int ladder = 1;
-      while (!todo.empty()) {
-        int n = todo.size();
-        for (int i = 0; i < n; i++) {
-          string word = todo.front();
-          todo.pop();
-          if (word == endWord) {
-            return ladder;
-          }
-          dict.erase(word);
-          for (int j = 0; j < word.size(); j++) {
-            char c = word[j];
-            for (int k = 0; k < 26; k++) {
-              word[j] = 'a' + k;
-              if (dict.find(word) != dict.end()) {
-                todo.push(word);
+      int L = beginWord.length();
+      unordered_map<string, vector<string>> allComboDict;
+      
+      for (string word : wordList) {
+        for (int i = 0; i < L; i++) {
+          string newWord = word.substr(0, i) + '*' + word.substr(i+1, L);
+          vector<string> transformations = (allComboDict.find(newWord) != allComboDict.end()) ? allComboDict[newWord] : vector<string>(); 
+          transformations.push_back(word);
+          allComboDict[newWord] = transformations;
+        }
+      }
+       queue<pair<string, int>> q;
+       q.push(make_pair(beginWord, 1));
+       unordered_map<string, bool> visited;
+        visited[beginWord] = true;
+        
+        while (!q.empty()) {
+          auto node = q.front();
+          q.pop();
+          string word = node.first;
+          int level = node.second;
+          for (int i = 0; i < L; i++) {
+            string newWord = word.substr(0, i) + '*' + word.substr(i+1, L);
+            for (string adjacentWord : allComboDict[newWord]) {
+              if (adjacentWord == endWord) {
+                return level + 1;
+              }
+              if (visited.find(adjacentWord) == visited.end()) {
+                visited[adjacentWord] = true;
+                q.push(make_pair(adjacentWord, level+1));
               }
             }
-            word[j] = c;
           }
         }
-        ladder++;
-      }
       return 0;
     }
 };
