@@ -3,20 +3,18 @@ class Solution
 public:
     int subarraySum(vector<int> &nums, int k)
     {
-        int i = 0;
-        int ans = 0;
+        int count = 0, sum = 0;
+        unordered_map<int, int> map;
+        map[0] = 1;
         for (int i = 0; i < nums.size(); i++)
         {
-            int current = 0;
-            for (int j = i; j < nums.size(); j++)
+            sum += nums[i];
+            if (map.find(sum - k) != map.end())
             {
-                current += nums.at(j);
-                if (current == k)
-                {
-                    ans++;
-                }
+                count += map[sum - k];
             }
+            map[sum] = map.find(sum) != map.end() ? map[sum] + 1 : 1;
         }
-        return ans;
+        return count;
     }
-};
+}
