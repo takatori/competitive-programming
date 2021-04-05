@@ -5,25 +5,22 @@ class Solution
 public:
     int jobScheduling(vector<int> &startTime, vector<int> &endTime, vector<int> &profit)
     {
-        vector<pair<int, int> > m;
-        int max_profit = profit[0];
-        m.push_back(make_pair(profit[0], endTime[0]));
-        for (int i = 1; i < profit.size(); i++)
+        map<int, int> times;
+        unordered_map<int, vector<pair<int, int> > > jobs;
+        for (int i = 0; i < startTime.size(); ++i)
         {
-            vector<pair<int, int> > tmp;
-            if (max_profit < profit[i])
+            times[startTime[i]] = 0;
+            jobs[startTime[i]].push_back({endTime[i], profit[i]});
+        }
+        int max_profit = 0;
+        for (auto it = rbegin(times); it != rend(times); ++it)
+        {
+            for (auto job : jobs[it->first])
             {
-                m.push_back(make_pair(profit[i], endTime[i]));
+                auto it = times.lower_bound(job.first);
+                max_profit = max(max_profit, (it == end(times) ? 0 : it->second) + job.second);
             }
-            for (int j = 0; j < m.size(); j++)
-            {
-                if (m[j].second <= startTime[i])
-                {
-                    tmp.push_back(make_pair(m[j].first + profit[i], endTime[i]));
-                    max_profit = max(max_profit, m[j].first + profit[i]);
-                }
-            }
-            m = tmp;
+            it->second = max_profit;
         }
         return max_profit;
     }
