@@ -5,9 +5,15 @@ class Solution
 public:
     int findKthLargest(vector<int> &nums, int k)
     {
-        sort(nums.begin(), nums.end(), [](int a, int b) {
-            return a > b;
-        });
-        return nums[k - 1];
+        priority_queue<int, vector<int>, greater<int> > heap;
+
+        for (int n : nums)
+        {
+            heap.push(n);
+            if (heap.size() > k)
+                heap.pop();
+        }
+
+        return heap.top();
     }
 };
