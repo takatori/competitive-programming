@@ -6,7 +6,7 @@ public:
     int jobScheduling(vector<int> &startTime, vector<int> &endTime, vector<int> &profit)
     {
         map<int, int> times;
-        unordered_map<int, vector<pair<int, int> > > jobs;
+        unordered_map<int, vector<pair<int, int>>> jobs;
         for (int i = 0; i < startTime.size(); ++i)
         {
             times[startTime[i]] = 0;
