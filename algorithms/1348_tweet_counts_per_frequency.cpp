@@ -28,7 +28,7 @@ public:
         else if (freq == "day")
             f = 86400;
 
-        int len = (endTime - startTime) / f;
+        int len = ((endTime - startTime) / f) + 1;
         vector<int> ans(len);
 
         for (const auto &[time, value] : db)
@@ -36,8 +36,8 @@ public:
             if (value.find(tweetName) != value.end())
             {
                 int i = (time - startTime) / f;
-                if (i >= 0 && i < len)
-                    ans[i]++;
+                if (time - startTime >= 0 && i < len)
+                    ans[i] += value.at(tweetName);
             }
         }
         return ans;
