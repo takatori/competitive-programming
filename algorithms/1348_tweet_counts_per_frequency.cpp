@@ -1,7 +1,7 @@
 class TweetCounts
 {
 private:
-    map<int, unordered_map<string, int> > db;
+    unordered_map<string, multiset<int> > all;
 
 public:
     TweetCounts()
@@ -10,14 +10,7 @@ public:
 
     void recordTweet(string tweetName, int time)
     {
-        if (db.find(time) != db.end() && db[time].find(tweetName) != db[time].end())
-        {
-            db[time][tweetName]++;
-        }
-        else
-        {
-            db[time] = {{tweetName, 1}};
-        }
+        all[tweetName].insert(time);
     }
 
     vector<int> getTweetCountsPerFrequency(string freq, string tweetName, int startTime, int endTime)
@@ -30,14 +23,12 @@ public:
 
         int len = ((endTime - startTime) / f) + 1;
         vector<int> ans(len);
-
-        for (const auto &[time, value] : db)
+        const auto s = all.find(tweetName);
+        if (s != all.end())
         {
-            if (value.find(tweetName) != value.end())
+            for (auto t = s->second.lower_bound(startTime); t != s->second.end() && *t <= endTime; ++t)
             {
-                int i = (time - startTime) / f;
-                if (time - startTime >= 0 && i < len)
-                    ans[i] += value.at(tweetName);
+                ans[(*t - startTime) / f]++;
             }
         }
         return ans;
