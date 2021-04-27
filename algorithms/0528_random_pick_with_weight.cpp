@@ -2,26 +2,27 @@ using namespace std;
 
 class Solution
 {
-    int sum;
-    int l;
-    mt19937 &mt;
-    uniform_int_distribution<int> dist;
+    vector<int> prefixSums;
 
 public:
     Solution(vector<int> &w)
     {
-        for (int i : w)
+        for (auto n : w)
         {
-            sum += i;
+            prefixSums.push_back(n + (prefixSums.empty() ? 0 : prefixSums.back()));
         }
-        l = w.size();
-        mt = mt19937 { std::random_device{}(); };
-        dist = std::uniform_int_distribution<int>(1, sum);
     }
 
     int pickIndex()
     {
-        int i = (dist(mt) / l) - 1;
-        return a[i];
+        // generate a random number in the range of [0, 1]
+        float randNum = (float)rand() / RAND_MAX;
+        float target = randNum * prefixSums.back();
+        for (int i = 0; i < prefixSums.size(); ++i)
+        {
+            if (target < prefixSums[i])
+                return i;
+        }
+        return prefixSums.size() - 1;
     }
 };
