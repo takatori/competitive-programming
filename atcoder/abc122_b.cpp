@@ -1,32 +1,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+string S;
+int N;
+string T = "ACGT";
+
 int main()
 {
-    string S;
     cin >> S;
+    N = S.length();
     int ans = 0;
-    int i = 0;
-    int j = 0;
-
-    while (i < S.length())
+    for (int i = 0; i < N; i++)
     {
-        int tmp = 0;
-        j = i;
-        while (j < S.length())
+        for (int j = i; j < N; j++)
         {
-            if (S[j] == 'A' || S[j] == 'C' || S[j] == 'G' || S[j] == 'T')
+            int ok = 1;
+            for (int x = i; x < j + 1; x++)
             {
-                tmp++;
-                j++;
+                if (T.find(S[x]) == string::npos)
+                    ok = 0;
             }
-            else
-            {
-                break;
-            }
+            if (ok)
+                ans = max(ans, j - i + 1);
         }
-        ans = max(ans, tmp);
-        i++;
     }
 
     cout << ans << endl;
