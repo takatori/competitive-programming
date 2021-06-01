@@ -20,7 +20,7 @@ int main()
     for (int i = 0; i < N; i++)
     {
         cin >> B_x[i] >> B_y[i];
-        B_s.insert(B_x[i] + "_" + B_y[i]);
+        B_s.insert(to_string(B_x[i]) + "_" + to_string(B_y[i]));
     }
 
     int x = A_x[0];
@@ -34,7 +34,7 @@ int main()
         bool ok = true;
         for (int j = 1; j < M; j++)
         {
-            auto s = (A_x[j] + xd) + "_" + (A_y[j] + yd);
+            string s = to_string(A_x[j] + xd) + "_" + to_string(A_y[j] + yd);
             if (B_s.find(s) == B_s.end())
             {
                 ok = false;
