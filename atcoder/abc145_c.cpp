@@ -1,67 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int num;
-double total;
-
-void r(int current, queue<int> &unused, vector<vector<double> > &d)
-{
-    if (unused.size() == 0)
-    {
-        num++;
-        return;
-    }
-    else
-    {
-        int a = unused.front();
-        unused.pop();
-        total += d[current][a];
-        r(a, unused, d);
-        return;
-    }
-}
+int N, X[8], Y[8];
 
 int main()
 {
-    int N;
     cin >> N;
-    vector<vector<int> > c(N, vector<int>(2));
     for (int i = 0; i < N; i++)
-    {
-        cin >> c[i][0] >> c[i][1];
-    }
+        cin >> X[i] >> Y[i];
 
-    vector<vector<double> > d(N, vector<double>(N));
+    vector<int> ord;
     for (int i = 0; i < N; i++)
+        ord.push_back(i);
+
+    long double sm = 0;
+    do
     {
-        for (int j = i; j < N; j++)
+        for (int i = 0; i < N - 1; i++)
         {
-            auto dist = sqrt(pow(c[i][0] - c[j][0], 2.0) + pow(c[i][1] - c[j][1], 2.0));
-            d[i][j] = d[j][i] = dist;
+            int a = ord[i];
+            int b = ord[i + 1];
+            long double dx = X[a] - X[b];
+            long double dy = Y[a] - Y[b];
+            sm += sqrt(dx * dx + dy * dy);
         }
-    }
+    } while (next_permutation(ord.begin(), ord.end()));
 
     for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            cout << d[i][j] << " ";
-        }
-        cout << endl;
-    }
-
-    for (int i = 0; i < N; i++)
-    {
-        queue<int> unused;
-        for (int j = 0; j < N; j++)
-        {
-            if (i != j)
-                unused.push(i);
-        }
-        r(i, unused, d);
-    }
-
-    cout << total / num << endl;
-
+        sm /= (i + 1);
+    printf("%.10Lf\n", sm);
     return 0;
 }
