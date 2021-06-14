@@ -8,30 +8,31 @@ int main()
     cin >> n;
     cin >> m;
 
-    vector<int> N(n);
-    for (int i = 0; i < n; i++)
-        cin >> N[i];
-    sort(N.begin(), N.end());
+    vector<int> in(n - 1);
+    for (int i = 0; i < n - 1; i++)
+        cin >> in[i];
+    in.push_back(0);
+    sort(in.begin(), in.end());
 
     int ans = 0;
 
-    for (int i = 0; i < m; i++)
+    while (m--)
     {
-        int M;
-        cin >> M;
+        int a;
+        cin >> a;
 
-        auto iter = lower_bound(N.begin(), N.end(), M);
-        int dist;
-        if (iter != N.end())
-        {
-            dist = *iter - M;
-        }
+        int idx = lower_bound(in.begin(), in.end(), a) - in.begin();
+
+        int s = 1 << 30;
+        if (idx != n)
+            s = in[idx] - a;
         else
-        {
-            dist = d - M;
-        }
+            s = d - a;
 
-        ans += dist;
+        if (idx)
+            s = min(s, a - in[idx - 1]);
+        ans += s;
     }
+
     cout << ans << endl;
 }
