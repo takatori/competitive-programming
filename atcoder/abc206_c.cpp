@@ -5,18 +5,14 @@ int main() {
 
   int N;
   cin >> N;
-  unordered_map<int, long long> a;
-  long long ans = N * (N-1) / 2;	
+  vector<int> A(N);
+  long long ans = 0;	
+  for (int i = 0; i < N; i++) cin >> a[i];
 
+  unordered_map<int, int> cnt;
   for (int i = 0; i < N; i++) {
-    int x;
-    cin >> x;
-    a[x]++;
-  }
-  
-  for (auto t : a) {
-    // cout << t.first << " " << t.second << endl;
-    ans = ans - (t.second * (t.second-1) / 2);
+    ans += i - cnt[A[i]];
+    cnt[A[i]]++;
   }
   
   cout << ans << endl;
