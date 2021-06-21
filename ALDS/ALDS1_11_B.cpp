@@ -1,45 +1,49 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int timestamp = 0;
+vector<vector<int> > nbrs(100);
+vector<int> ds(100), fs(100);
 
-void traverse(vector<vector<int> > &v, vector<vector<int> > &ans, int t)
+int dfs(int u, int t)
 {
-    timestamp++;
-    ans[t][0] = timestamp;
-    for (int i = v[t].size() - 1; i >= 0; i--)
+    ds[u] = ++t;
+    int l = nbrs[u].size();
+    for (int i = 0; i < l; i++)
     {
-        traverse(v, ans, i);
+        int &v = nbrs[u][i];
+        if (!ds[v])
+            t = dfs(v, t);
     }
-    timestamp++;
-    ans[t][1] = timestamp;
-    return;
+    return (fs[u] = ++t);
 }
 
 int main()
 {
     int n;
     cin >> n;
-    vector<vector<int> > v(n);
 
     for (int i = 0; i < n; i++)
     {
         int u, k;
         cin >> u >> k;
+        u--;
         for (int j = 0; j < k; j++)
         {
             int a;
             cin >> a;
-            v[u].push_back(a);
+            nbrs[u].push_back(a);
         }
     }
 
-    vector<vector<int> > ans(n, vector<int>(2));
-
-    traverse(v, ans, 0);
+    int t = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (!ds[i])
+            t = dfs(i, t);
+    }
 
     for (int i = 0; i < n; i++)
     {
-        cout << v[i][0] << " " << v[i][1] << endl;
+        cout << i << " " << ds[i] << " " << fs[i] << endl;
     }
 }
